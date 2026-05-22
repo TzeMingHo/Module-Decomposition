@@ -1,11 +1,10 @@
 const state = {
   messageString: "",
   userString: "",
-  backendURL: "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
-  // backendURL: "http://localhost:4000",
+  // backendURL: "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
+  backendURL: "http://localhost:4000",
   messages: [],
-}
-
+};
 
 function createEmptyMessage() {
   const emptyMessage = document.createElement("p");
@@ -38,10 +37,9 @@ function createMessageThreads(chatHistoryArray) {
   });
 }
 
-
 async function chatDisplay() {
   const chatDisplayArea = document.getElementById("chat-display-area");
-  chatDisplayArea.innerHTML = '';
+  chatDisplayArea.innerHTML = "";
   const chatHistoryArray = state.messages;
   if (chatHistoryArray.length == 0) {
     chatDisplayArea.append(createEmptyMessage());
@@ -51,21 +49,24 @@ async function chatDisplay() {
 }
 
 const keepFetchingMessages = async () => {
-    const lastMessageTime = state.messages.length > 0 ? state.messages[state.messages.length - 1].timestamp : null;
-    const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
-    const url = `${state.backendURL}/messages${queryString}`;
-    try {
-      const rawResponse = await fetch(url);
-      const response = await rawResponse.json();
-      if (response.length > 0) {
-        state.messages.push(...response);
-        chatDisplay();
-      }
-    } catch (error) {
-      console.log(`Failed on connection: ${error}`)
+  const lastMessageTime =
+    state.messages.length > 0
+      ? state.messages[state.messages.length - 1].timestamp
+      : null;
+  const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
+  const url = `${state.backendURL}/messages${queryString}`;
+  try {
+    const rawResponse = await fetch(url);
+    const response = await rawResponse.json();
+    if (response.length > 0) {
+      state.messages.push(...response);
+      chatDisplay();
     }
-    setTimeout(keepFetchingMessages, 100);
-}
+  } catch (error) {
+    console.log(`Failed on connection: ${error}`);
+  }
+  setTimeout(keepFetchingMessages, 100);
+};
 
 function messageInputReset() {
   state.messageString = "";
@@ -82,14 +83,14 @@ async function postingMessage(messageString, userString) {
     const response = await fetch(state.backendURL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         message: messageString,
         user: userString,
-        timestamp: newTimestamp
-      })
-    })
+        timestamp: newTimestamp,
+      }),
+    });
     if (response.ok) {
       const confirmMessage = await response.text();
       if (confirmMessage == "sent") {
@@ -98,36 +99,37 @@ async function postingMessage(messageString, userString) {
       }
     }
   } catch (error) {
-    console.error(`Failed to post message: ${error}`)
+    console.error(`Failed to post message: ${error}`);
   }
 }
 
 async function messageSubmitHandler(e, messageString, userString) {
   e.preventDefault();
   if (!messageString || !userString) {
-    console.error(`Message or user cannot be empty.`)
-    window.alert("Message or user cannot be empty.")
+    console.error(`Message or user cannot be empty.`);
+    window.alert("Message or user cannot be empty.");
     return;
   } else {
-    await postingMessage(messageString, userString)
+    await postingMessage(messageString, userString);
   }
 }
 
 function messageInputHandler() {
-  
-  const messageInputElement = document.getElementById("message-input")
+  const messageInputElement = document.getElementById("message-input");
   messageInputElement.addEventListener("input", (e) => {
     state.messageString = e.target.value.trim();
-  })
+  });
 
-  const userInputElement = document.getElementById("user-name-input")
+  const userInputElement = document.getElementById("user-name-input");
   userInputElement.addEventListener("input", (e) => {
     state.userString = e.target.value.trim();
-  })
+  });
 
-  document.getElementById("message-submit-button").addEventListener("click", async (e) => {
-    await messageSubmitHandler(e, state.messageString, state.userString)
-  })
+  document
+    .getElementById("message-submit-button")
+    .addEventListener("click", async (e) => {
+      await messageSubmitHandler(e, state.messageString, state.userString);
+    });
 }
 
 window.onload = async () => {
