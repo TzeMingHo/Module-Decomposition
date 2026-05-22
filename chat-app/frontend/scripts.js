@@ -1,3 +1,5 @@
+import { scrollToBottom } from "./utilities.js";
+
 const state = {
   messageString: "",
   userString: "",
@@ -46,6 +48,7 @@ async function chatDisplay() {
   } else {
     chatDisplayArea.append(...createMessageThreads(chatHistoryArray));
   }
+  scrollToBottom();
 }
 
 const keepFetchingMessages = async () => {
@@ -79,7 +82,6 @@ function messageInputReset() {
 
 async function postingMessage(messageString, userString) {
   try {
-    const newTimestamp = new Date().getTime();
     const response = await fetch(state.backendURL, {
       method: "POST",
       headers: {
@@ -88,7 +90,6 @@ async function postingMessage(messageString, userString) {
       body: JSON.stringify({
         message: messageString,
         user: userString,
-        timestamp: newTimestamp,
       }),
     });
     if (response.ok) {

@@ -1,85 +1,86 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-
 #chat-display-area {
-    background-color: aliceblue;
-    border: 1px solid;
-    border-radius: 5px;
-    width: 80%;
-    height: 68vh;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  background-color: aliceblue;
+  border: 1px solid;
+  border-radius: 5px;
+  width: 80%;
+  height: 68vh;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
 }
 
 .chat-thread {
-    background-color: white;
-    border: navy solid 1.5px;
-    max-width: 90%;
-    border-radius: 5px;
-    height: 10vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  background-color: white;
+  border: navy solid 1.5px;
+  max-width: 90%;
+  border-radius: 5px;
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .message-in-thread {
-    height: 8vh;
+  height: 8vh;
 }
 
 .info-in-thread {
-    background-color: navy;
-    color: white;
-    display: flex;
-    justify-content: space-between;
+  background-color: navy;
+  color: white;
+  display: flex;
+  justify-content: space-between;
 }
 
 .timestamp-in-thread {
-    font-size: small;
-    display: flex;
-    align-items: center;
+  font-size: small;
+  display: flex;
+  align-items: center;
 }
 
 .user-name-in-thread {
-    color: white;
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 5px;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 5px;
 }
 
 #message-form {
-    border: 1px solid;
-    width: 80%;
-    height: 20vh;
-    padding: 2px;
+  border: 1px solid;
+  width: 80%;
+  height: 20vh;
+  padding: 2px;
 }
 
 #message-input {
-    height: 11.5vh;
-    width: 100%;
-    padding: 8px;
+  height: 11.5vh;
+  width: 100%;
+  padding: 8px;
 }
 
 #signature-and-send-area {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 #user-name-input {
-    padding: 5px;
+  padding: 5px;
 }
 
 #message-submit-button {
-    padding: 5px;
+  padding: 5px;
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: aliceblue;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: aliceblue;
 }
