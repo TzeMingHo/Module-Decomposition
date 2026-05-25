@@ -1,8 +1,9 @@
 import { scrollToBottom } from "./utilities.js";
 
 const state = {
-  // backendURL: "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
-  backendURL: "http://localhost:4000",
+  backendURL:
+    "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
+  // backendURL: "http://localhost:4000",
   messages: [],
 };
 
