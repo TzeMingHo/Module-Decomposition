@@ -1,13 +1,6 @@
 import express from "express";
 import cors from "cors";
 
-const app = express();
-app.use(
-  cors({
-    // origin: "https://tzemingho-chatapp-server-frontend.hosting.codeyourfuture.io"
-  }),
-);
-app.use(express.json());
 const port = 4000;
 
 const waitingRoom = [];
@@ -19,6 +12,14 @@ const chatHistory = [
     timestamp: new Date().getTime(),
   },
 ];
+
+const app = express();
+app.use(
+  cors({
+    // origin: "https://tzemingho-chatapp-server-frontend.hosting.codeyourfuture.io"
+  }),
+);
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json(chatHistory);
