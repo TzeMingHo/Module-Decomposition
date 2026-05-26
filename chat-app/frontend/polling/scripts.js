@@ -5,25 +5,23 @@ import {
   chatDisplay,
   messageInputReset,
   messageSubmitHandler,
-  messageInputHandler,
+  messageFormHandler,
 } from "../utilities.js";
 
 const state = {
-  messageString: "",
-  userString: "",
-  // backendURL: "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
-  backendURL: "http://localhost:4000",
+  backendURL:
+    "https://tzemingho-chatapp-server-backend.hosting.codeyourfuture.io",
+  // backendURL: "http://localhost:4000",
   messages: [],
 };
 
-const keepFetchingMessages = async () => {
-  const lastMessageTime =
-    state.messages.length > 0
-      ? state.messages[state.messages.length - 1].timestamp
-      : null;
+async function keepFetchingMessages() {
+  const lastMessageTime = state.messages.at(-1)?.timestamp ?? null;
   const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
   const url = `${state.backendURL}/messages${queryString}`;
+  const milliseconds = 100;
   try {
+    // fetch may remain pending up to 25 seconds
     const rawResponse = await fetch(url);
     const response = await rawResponse.json();
     if (response.length > 0) {
@@ -33,8 +31,8 @@ const keepFetchingMessages = async () => {
   } catch (error) {
     console.log(`Failed on connection: ${error}`);
   }
-  setTimeout(keepFetchingMessages, 100);
-};
+  setTimeout(keepFetchingMessages, milliseconds);
+}
 
 async function postingMessage(messageString, userString) {
   try {
@@ -51,7 +49,6 @@ async function postingMessage(messageString, userString) {
     if (response.ok) {
       const confirmMessage = await response.text();
       if (confirmMessage == "sent") {
-        chatDisplay();
         messageInputReset();
       }
     }
@@ -62,5 +59,5 @@ async function postingMessage(messageString, userString) {
 
 window.onload = async () => {
   keepFetchingMessages();
-  messageInputHandler();
+  messageFormHandler();
 };

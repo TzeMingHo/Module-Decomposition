@@ -49,16 +49,16 @@ async function chatDisplay(state) {
 }
 
 function messageInputReset() {
-  state.messageString = "";
-  state.userString = "";
-  const messageInputElement = document.getElementById("message-input");
-  const userInputElement = document.getElementById("user-name-input");
-  messageInputElement.value = "";
-  userInputElement.value = "";
+  const formElement = document.getElementById("message-form");
+  formElement.reset();
 }
 
-async function messageSubmitHandler(e, messageString, userString) {
+async function messageSubmitHandler(e) {
   e.preventDefault();
+
+  const messageString = document.getElementById("message-input").value.trim();
+  const userString = document.getElementById("user-name-input").value.trim();
+
   if (!messageString || !userString) {
     console.error(`Message or user cannot be empty.`);
     window.alert("Message or user cannot be empty.");
@@ -68,22 +68,9 @@ async function messageSubmitHandler(e, messageString, userString) {
   }
 }
 
-function messageInputHandler() {
-  const messageInputElement = document.getElementById("message-input");
-  messageInputElement.addEventListener("input", (e) => {
-    state.messageString = e.target.value.trim();
-  });
-
-  const userInputElement = document.getElementById("user-name-input");
-  userInputElement.addEventListener("input", (e) => {
-    state.userString = e.target.value.trim();
-  });
-
-  document
-    .getElementById("message-submit-button")
-    .addEventListener("click", async (e) => {
-      await messageSubmitHandler(e, state.messageString, state.userString);
-    });
+function messageFormHandler() {
+  const formElement = document.getElementById("message-form");
+  formElement.addEventListener("submit", messageSubmitHandler);
 }
 
 export {
@@ -93,5 +80,5 @@ export {
   chatDisplay,
   messageInputReset,
   messageSubmitHandler,
-  messageInputHandler,
+  messageFormHandler,
 };
