@@ -58,6 +58,7 @@ const keepFetchingMessages = async () => {
   const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
   const url = `${state.backendURL}/messages${queryString}`;
   try {
+    // fetch may remain pending up to 25 seconds
     const rawResponse = await fetch(url);
     const response = await rawResponse.json();
     if (response.length > 0) {
