@@ -50,13 +50,11 @@ async function chatDisplay() {
   scrollToBottom();
 }
 
-const keepFetchingMessages = async () => {
-  const lastMessageTime =
-    state.messages.length > 0
-      ? state.messages[state.messages.length - 1].timestamp
-      : null;
+async function keepFetchingMessages() {
+  const lastMessageTime = state.messages.at(-1)?.timestamp ?? null;
   const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
   const url = `${state.backendURL}/messages${queryString}`;
+  const milliseconds = 100;
   try {
     // fetch may remain pending up to 25 seconds
     const rawResponse = await fetch(url);
@@ -68,14 +66,12 @@ const keepFetchingMessages = async () => {
   } catch (error) {
     console.log(`Failed on connection: ${error}`);
   }
-  setTimeout(keepFetchingMessages, 100);
-};
+  setTimeout(keepFetchingMessages, milliseconds);
+}
 
 function messageInputReset() {
-  const messageInputElement = document.getElementById("message-input");
-  const userInputElement = document.getElementById("user-name-input");
-  messageInputElement.value = "";
-  userInputElement.value = "";
+  const formElement = document.getElementById("message-form");
+  formElement.reset();
 }
 
 async function postingMessage(messageString, userString) {
