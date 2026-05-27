@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat app</title>
+    <script src="scripts.js" type="module"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Chat channel</h1>
+    </header>
+    <main>
+      <div id="chat-display-area"></div>
+      <form id="message-form">
+        <textarea
+          type="text"
+          id="message-input"
+          placeholder="message"
+          required
+        ></textarea>
+        <div id="signature-and-send-area">
+          <input
+            type="text"
+            id="user-name-input"
+            placeholder="user name"
+            required
+          />
+          <button type="submit" id="message-submit-button">Send</button>
+        </div>
+      </form>
+    </main>
+    <footer>Created by Brian</footer>
+  </body>
+</html>

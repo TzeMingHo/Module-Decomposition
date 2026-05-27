@@ -1,39 +1,59 @@
-import express from "express";
+import express, { raw } from "express";
 import cors from "cors";
 import http from "http";
-import { server as WebSocketServer } from "websocket";
+import { WebSocketServer } from "ws";
 
 const port = 4001;
 const app = express();
+
+app.use(cors());
+app.use(express.json())
+
 const server = http.createServer(app);
-const webSocketServer = new WebSocketServer({ httpServer: server });
+const webSocketServer = new WebSocketServer({ server: server });
 
-const clients = new Set();
+const messages = [
+  {
+    "message": "Welcome to the channel",
+    "user": "System"
+  },
+];
 
-webSocketServer.on("connection", (ws) => {
-  clients.add(ws);
-  console.log(`Client connected. Total clients: ${clients.size}`);
+webSocketServer.on("connection", (clientCollection) => {
+  console.log(`Client connected. Total clients: ${webSocketServer.clients.size}`);
 
-  ws.on("message", (rawData) => {
+  clientCollection.send(JSON.stringify({type: "HISTORY", data: messages}));
+
+  clientCollection.on("message", (rawMessageString) => {
     try {
-      const messageData = JSON.parse(rawData);
-      console.log("Received:", messageData);
+      const payload = JSON.parse(rawMessageString);
 
-      const broadcastData = JSON.stringify(messageData);
-      clients.forEach((client) => {
-        if (client.readyState === 1) client.send(broadcastData);
-      });
-    } catch (err) {
-      console.error("Failed to parse message:", err);
+      if (payload.type === "NEW_MESSAGE") {
+        const {message, user} = payload;
+        const newMessage = {
+          message: message,
+          user: user,
+          timeStamp: new Date().toISOString()
+        };
+
+        messages.push(newMessage);
+
+        webSocketServer.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({type: "NEW_MESSAGE", data: newMessage}))
+          }
+        })
+      }
+    } catch (error) {
+      console.error("Failed to parse incoming message from socket: ", error);
     }
-  });
+  })
 
-  ws.on("close", () => {
-    clients.deletes(ws);
-    console.log(`Client disconnected. Total clients: ${clients.size}`);
-  });
-
-  server.listen(port, () => {
-    console.log(`webSocketServer running on prot: ${port}`);
-  });
+  clientCollection.on("close", () => {
+    console.log(`Client disconnected. Total clients: ${webSocketServer.clients.size}`);
+  })
 });
+
+server.listen(port, () => {
+  console.log(`Server runs on port: ${port}`);
+})
