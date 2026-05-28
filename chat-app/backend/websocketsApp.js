@@ -14,8 +14,12 @@ const webSocketServer = new WebSocketServer({ server: server });
 
 const messages = [
   {
+    id: crypto.randomUUID(),
     "message": "Welcome to the channel",
-    "user": "System"
+    "user": "System",
+    timestamp: new Date().toISOString(),
+    like: 0,
+    dislike: 0
   },
 ];
 
@@ -41,6 +45,24 @@ webSocketServer.on("connection", (clientCollection) => {
         webSocketServer.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({type: "NEW_MESSAGE", data: newMessage}))
+          }
+        })
+      } else if (payload.type === "REACTION") {
+        const { messageId, action } = payload.data;
+
+        const targetMessage = messages.find((message) => message.id === messageId);
+
+        if (targetMessage) {
+          if (action === "like") targetMessage.like += 1;
+          if (action === "dislike") targetMessage.dislike += 1;
+        }
+
+        webSocketServer.clients.forEach((client) => {
+          if (client.readyState === 1) {
+            client.send(JSON.stringify({
+              type: "UPDATE_MESSAGE",
+              data: targetMessage
+            }))
           }
         })
       }

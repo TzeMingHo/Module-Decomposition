@@ -28,8 +28,13 @@ function initializeWebSockets() {
       state.messages = payload.data;
     } else if (payload.type === "NEW_MESSAGE") {
       state.messages.push(payload.data);
+    } else if (payload.type === "UPDATE_MESSAGE") {
+      const index = state.messages.findIndex((message) => message.id === payload.data.id);
+      if (index !== -1) {
+        state.messages[index] = payload.data;
+      }
     }
-    chatDisplay(state);
+    chatDisplay(state, socket);
   });
 
   socket.addEventListener("close", () => {
