@@ -54,9 +54,9 @@ async function keepFetchingMessages() {
   const lastMessageTime = state.messages.at(-1)?.timestamp ?? null;
   const queryString = lastMessageTime ? `?since=${lastMessageTime}` : "";
   const url = `${state.backendURL}/messages${queryString}`;
-  const milliseconds = 100;
+  const pollingIntervalMS = 100;
   try {
-    // fetch may remain pending up to 25 seconds
+    // the backend is using long-polling, and will hang open for up to 25 seconds waiting for an update event before returning
     const rawResponse = await fetch(url);
     const response = await rawResponse.json();
     if (response.length > 0) {
@@ -66,7 +66,7 @@ async function keepFetchingMessages() {
   } catch (error) {
     console.log(`Failed on connection: ${error}`);
   }
-  setTimeout(keepFetchingMessages, milliseconds);
+  setTimeout(keepFetchingMessages, pollingIntervalMS);
 }
 
 function messageInputReset() {
