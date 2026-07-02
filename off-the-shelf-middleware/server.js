@@ -13,22 +13,18 @@ const checkUsernameHeader = (req, res, next) => {
 }
 
 app.post("/", checkUsernameHeader, (req, res) => {
+    const username = req.username;
+
+    if (!username) return res.status(401).send("You are not authenticated.");
+
     const parsedBody = req.body || [];
     const count = parsedBody.length;
-
-    const username = req.username;
 
     const subjectWord = count === 1 ? "subject" : "subjects";
     const subjectsList = count > 0 ? `: ${parsedBody.join(", ")}` : "";
 
-    let responseMessage = "";
-
-    if (username) {
-        responseMessage += `You are authenticated as ${username}.\n\n`;
-    } else {
-        responseMessage += `You are not authenticated.\n\n`;
-    }
-
+    let responseMessage = `You are authenticated as ${username}.\n\n`;
+    
     responseMessage += `You have requested information about ${count} ${subjectWord}${subjectsList}`;
 
     res.send(responseMessage);
