@@ -7,7 +7,7 @@ app.use(express.text({ type: "application/x-www-form-urlencoded" }));
 
 const checkUsernameHeader = (req, res, next) => {
   const usernameHeader = req.get("X-Username");
-  usernameHeader ? (req.username = usernameHeader) : (req.username = null);
+  req.username = usernameHeader || null;
   next();
 };
 
@@ -39,18 +39,15 @@ const validateJsonArrayBody = (req, res, next) => {
 
 app.post("/", checkUsernameHeader, validateJsonArrayBody, (req, res) => {
   const { username, parsedBody } = req;
+
+  if (!username) return res.status(401).send("You are not authenticated.");
+
   const count = parsedBody.length;
 
   const subjectWord = count === 1 ? "subject" : "subjects";
   const subjectsList = count > 0 ? `: ${parsedBody.join(", ")}` : "";
-
-  let responseMessage = "";
-
-  if (username) {
-    responseMessage += `You are authenticated as ${username}.\n\n`;
-  } else {
-    responseMessage += `You are not authenticated.\n\n`;
-  }
+  
+  let responseMessage = `You are authenticated as ${username}.\n\n`;
 
   responseMessage += `You have requested information about ${count} ${subjectWord}${subjectsList}`;
 

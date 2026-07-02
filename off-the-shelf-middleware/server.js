@@ -8,7 +8,7 @@ app.use(express.json());
 
 const checkUsernameHeader = (req, res, next) => {
     const usernameHeader = req.get("X-Username");
-    req.username = usernameHeader? usernameHeader : null;
+    req.username = usernameHeader || null;
     next();
 }
 
